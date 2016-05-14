@@ -1,0 +1,103 @@
+body{
+	margin: 0px;
+	padding: 0px;
+	background-image: url('../background2.jpg');
+	background-size: 1400px;
+	background-repeat: no-repeat;
+
+}
+
+#login, #signup{
+	margin: 0 auto;
+	text-align: center;
+	background-color: #EEE;
+	width: 30%;
+	height: auto;
+	padding-bottom: 20px;
+	border-radius: 7px;
+
+}
+
+#login h4, #signup h4{
+	color: #4CAF50;
+	font-size: 30px;
+	font-weight: 200px;
+
+}
+
+#logo{
+	float: left;
+	margin-top: 0px;
+	margin-left: 50px;
+	font-size: 42px;
+	font-weight: 300px;
+	color: #FFF;
+}
+
+#nav button{
+	font-size: 24px;
+	text-decoration: none;
+	float: right;
+	margin-top: 30px;
+	margin-right: 50px;
+	color:#64B5F6;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-right: 40px;
+	padding-left: 40px;
+	border-radius: 30px;
+	border: 3px solid #64B5F6;
+	transition-duration: 0.4s;
+	background: none;
+}
+
+#nav button:hover{
+	transition-duration: 0.4s;
+	color: #FFF;
+	background-color: #64B5F6;
+}
+
+
+#username, #password,#firstname, #lastname, #susername, #email, #spassword, #rpassword{
+	width: 60%;
+	border-radius: 4px;
+	border-style: none;
+	height: 25px;
+	text-align: center;
+	transition-duration: 0.4s;
+}
+
+
+
+
+#username:focus, #password:focus,#firstname:focus, #lastname:focus, #susername:focus, #email:focus, #spassword:focus, #rpassword:focus{
+	transition-duration: 0.4s;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#submit, #submit1{
+	width: 25%;
+	border-style: none;
+	color: #FFF;
+	background-color: #64B5F6;
+	transition-duration: 0.5s;
+}
+
+#submit:hover, #submit1:hover{
+	color: #64B5F6;
+	background-color: #FFF;
+	transition-duration: 0.5s;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#fail{
+	background: #ef5350;
+	color: #FFF;
+}
+
+#success{
+	color: #FFF;
+	background-color: #27ae60;
+}
+
+
