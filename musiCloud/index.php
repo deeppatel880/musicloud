@@ -13,90 +13,11 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />	
       <script type = "text/javascript" 
          src = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
          <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
-      <script type="text/javascript">
-      	$(document).ready(function(){
-      		var login_class = $("#login").attr('class');
-      		var signup_class = $("#signup").attr('class');
-      		function remove(){
-      			$("#login").css("display","none");
-      			$('#data').html('');
-      			$('#signup').show().toggleClass('animated fadeInRight');
-      		}
-
-      		function getback(){
-      			$("#signup").css("display","none");
-      			$('#result').html('');
-      			$("#login").css("display","block");
-      			$('#login').toggleClass('animated fadeInLeft');
-      		}
-      		$('#signup').hide();
-      		$("#login").toggleClass('animated flipInX');
-      		$('#submit').click(function(){
-      			$('#login').removeClass();
-      			var username = $('#username').val();
-      			var password = $('#password').val();
-      			$.post("verify/checklogin.php",{username:username,password:password},function(data){
-      				$("#data").html(data + "<br>");
-
-      				if (data == "<div id='fail'>Please provide login information</div>" || data == "<div id='fail'>Invalid username or password</div>") {
-      					$("#login").addClass('animated jello');
-      				}else{
-      					location.reload();
-      				}	
-
-      			});
-      			return false;
-      		});
-      		$('#submit1').click(function(){
-      			$("#signup").removeClass();
-      			
-      			var firstname = $("#firstname").val();
-      			var lastname  = $("#lastname").val();
-      			var susername = $("#susername").val();
-      			var email = $("#email").val();
-      			var spassword = $("#spassword").val();
-      			var rpassword = $("#rpassword").val()
-      			
-      			$.post("verify/checksignup.php",{firstname:firstname,lastname:lastname,susername:susername,email:email,spassword:spassword,rpassword:rpassword},function(data){
-      				$("#result").html(data + "<br>");
-
-      				if(data == "<div id='success'>Your account has been successfully created</div>"){
-      					location.reload(true);
-      				}else{
-      					$("#signup").addClass("animated jello");
-      				}
-      			})
-
-
-
-
-
-
-      			return false;
-      		});
-
-      		$("#sign").click(function(){
-      				$('#login').removeClass();
-      				$('#signup').removeClass();
-      				$('#login').addClass('animated fadeOutLeft');
-      				setTimeout(remove, 500);
-      			
-      			
-      		});
-      		$("#log").click(function(){
-      			$('#login').removeClass();
-      			$('#signup').removeClass();
-      			$('#signup').addClass('animated fadeOutRight');
-      			setTimeout(getback, 500);
-      		});
-      	});
-      </script>   
 </head>
 <body>
 <?php if(isset($_SESSION['username'])){ ?>
@@ -115,7 +36,8 @@
 	<form action="" method="post">
 		<input type="text" name="username" id="username" placeholder="Enter your username"></input><br><br>
 		<input type="password" name="password" id="password" placeholder="Enter your password"></input><br><br>
-		<button name="login" id="submit"><span>Log In</span></button>
+		<button name="login" id="submit"><span>Log In</span></button><br><br>
+    <a href="#" id="next">Or Sign Up</a>
 	</form>
 </div>
 <div id="signup">
@@ -128,9 +50,85 @@
 		<input type="email" name="email" id="email" placeholder="Email"></input><br><br>
 		<input type="password" name="spassword" id="spassword" placeholder="New Password"></input><br><br>
 		<input type="password" name="rpassword" id="rpassword" placeholder="Re-enter Password"></input><br><br>
-		<button name="signup" id="submit1"><span>Sign Up</span></button>
+		<button name="signup" id="submit1"><span>Sign Up</span></button><br><br>
+    <a href="#" id="prev">Have an account...log in</a>
 	</form>
 </div>	
+<script type="text/javascript">
+        $(document).ready(function(){
+          var login_class = $("#login").attr('class');
+          var signup_class = $("#signup").attr('class');
+          function remove(){
+            $("#login").css("display","none");
+            $('#data').html('');
+            $('#signup').show().toggleClass('animated fadeInRight');
+          }
+
+          function getback(){
+            $("#signup").css("display","none");
+            $('#result').html('');
+            $("#login").css("display","block");
+            $('#login').toggleClass('animated fadeInLeft');
+          }
+          $('#signup').hide();
+          $("#login").toggleClass('animated flipInX');
+          $('#submit').click(function(){
+            $('#login').removeClass();
+            var username = $('#username').val();
+            var password = $('#password').val();
+            $.post("verify/checklogin.php",{username:username,password:password},function(data){
+              $("#data").html(data + "<br>");
+
+              if (data == "<div id='fail'>Please provide login information</div>" || data == "<div id='fail'>Invalid username or password</div>") {
+                $("#login").addClass('animated jello');
+              }else{
+                location.reload();
+              } 
+
+            });
+            return false;
+          });
+          $('#submit1').click(function(){
+            $("#signup").removeClass();
+            
+            var firstname = $("#firstname").val();
+            var lastname  = $("#lastname").val();
+            var susername = $("#susername").val();
+            var email = $("#email").val();
+            var spassword = $("#spassword").val();
+            var rpassword = $("#rpassword").val()
+            
+            $.post("verify/checksignup.php",{firstname:firstname,lastname:lastname,susername:susername,email:email,spassword:spassword,rpassword:rpassword},function(data){
+              $("#result").html(data + "<br>");
+
+              if(data == "<div id='success'>Your account has been successfully created</div>"){
+                location.reload(true);
+              }else{
+                $("#signup").addClass("animated jello");
+              }
+            })
+            return false;
+          });
+
+          $("#sign , #next").click(function(){
+            if(!$("#signup").hasClass("animated fadeInRight")){
+              $('#login').removeClass();
+              $('#signup').removeClass();
+              $('#login').addClass('animated fadeOutLeft');
+              setTimeout(remove, 500);
+            }
+            
+          });
+          $("#log,#prev").click(function(){
+            if(!$("#login").hasClass("animated fadeInLeft") && !$("#login").hasClass("animated flipInX")){
+            $('#login').removeClass();
+            $('#signup').removeClass();
+            $('#signup').addClass('animated fadeOutRight');
+            setTimeout(getback, 500);
+            }
+          });
+        });
+      </script>   
 </body>
 <?php } ?>
 </html>

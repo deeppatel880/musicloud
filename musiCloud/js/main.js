@@ -21,7 +21,6 @@ var barSize = 271;
 $(links).hide();
 $(entireAudioPlayer).draggable();
 $(document).tooltip();
-$("#playlist li:first-child").addClass("current-song");
  function audioPlayer(){
             var currentSong = 0;
             var song_playing = $("#audioPlayer")[0];
@@ -33,12 +32,18 @@ $("#playlist li:first-child").addClass("current-song");
             $("#playlist li a").click(function(e){
                e.preventDefault(); 
                song_playing.src = this;
+               e.preventDefault();
                song_playing.play();
+               e.preventDefault();
                $("#playlist li").removeClass("current-song");
+               e.preventDefault();
                 currentSong = $(this).parent().index();
+                e.preventDefault();
                 $(this).parent().addClass("current-song");
+                e.preventDefault();
                 $(playButton).css("display","none");
               $(pauseButton).css("display","block");
+              e.preventDefault();
               updateTime = setInterval(updateTime,250);
             });
             
@@ -52,7 +57,9 @@ $("#playlist li:first-child").addClass("current-song");
                 $("#playlist li").removeClass("current-song");
                 $("#playlist li:eq("+currentSong+")").addClass("current-song");
                 song_playing.src = $("#playlist li a")[currentSong].href;
-                song_playing.play();   
+                song_playing.play();  
+                $(playButton).css("display","none");
+                $(pauseButton).css("display","block"); 
                 updateTime = setInterval(updateTime,250);
             }
 
@@ -100,11 +107,17 @@ $("#playlist li:first-child").addClass("current-song");
 
             //menu toggle
             title.addEventListener("click",toggleMenu);
+            $(document).on("keyup",function(event){
+              if(event.which === 77){
+                toggleMenu();
+              }
+            })
             function toggleMenu(){
             $(links).toggle();
             updateTime = setInterval(updateTime,250);
             }
 
+            //updating which song is playing and its title
             function updateTime(){
               if(!song_playing.ended){
                 var currentMin = parseInt(song_playing.currentTime/60);
@@ -112,7 +125,11 @@ $("#playlist li:first-child").addClass("current-song");
 
                 var size = parseInt(song_playing.currentTime * barSize/song_playing.duration);
                 progressBar.style.width = size + "px";
-                song_to_display.innerHTML = $(".current-song").text();
+                if($(".current-song").text().length > 27){
+                    song_to_display.innerHTML = $(".current-song").text().substring(0,24) + '...';
+                }else{
+                    song_to_display.innerHTML = $(".current-song").text();
+                }
 
                 if (currentSec > 9) {
 
@@ -130,8 +147,7 @@ $("#playlist li:first-child").addClass("current-song");
            function clickBar(event){
               if(!song_playing.ended){
                 var mouseXValue = event.pageX - defaultBar.offsetLeft;
-                var newTime = (mouseXValue * song_playing.duration/barSize) - (1/7 * song_playing.duration) - (1/21 * song_playing.duration);
-
+                var newTime = (mouseXValue * song_playing.duration/barSize) - (1/6.3 * song_playing.duration);
                 song_playing.currentTime = newTime;
 
                 progressBar.style.width = mouseXValue + "px";
@@ -170,7 +186,41 @@ $("#playlist li:first-child").addClass("current-song");
               song_playing.play();
               $(playButton).css("display","none");
               $(pauseButton).css("display","block");
+            }else if(trigger.which === 80){
+              prevSong();
+            }else if(trigger.which === 78){
+              nextSong();
+            }else if (trigger.which === 70) {
+              forward10sec();
+            }else if(trigger.which === 66){
+              backwards10sec();
             }
+           })
+
+           //upload panel hide and show
+           $("#cloud-upload").click(function(){
+              $("#upload-panel").removeClass();
+              $("#upload-panel").show().addClass("animated fadeInDown");
+              var whitebg = document.getElementById("upload-body");
+             var dlg = document.getElementById("upload-panel");
+             $(whitebg).css("transition-duration","0.5s");
+             whitebg.style.display = "block";
+             dlg.style.display = "block";
+
+            var winWidth = window.innerWidth;
+            var winHeight = window.innerHeight;
+                
+            dlg.style.left = (winWidth/2) - 400/2 + "px";
+            dlg.style.top = "150px";
+
+           })
+           $(".fa-times").click(function(){
+            $("#upload-panel").removeClass();
+            $("#upload-panel").addClass("animated fadeOutUp");
+            var whitebg = document.getElementById("upload-body");
+            var dlg = document.getElementById("upload-panel");
+            whitebg.style.display = "none";
+            
            })
 
         }

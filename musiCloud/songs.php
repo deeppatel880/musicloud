@@ -2,28 +2,7 @@
 include "config/config.php";
 session_start();
 $id = $_SESSION['id'];
-$username = $_SESSION['username'];	
-if(isset($_FILES['file'])){
-	$name = $_FILES['file']['name'];
-	$type = $_FILES['file']['type'];
-	$size = $_FILES['file']['size'];
-	$temp = $_FILES['file']['tmp_name'];
-	$error = $_FILES['file']['error'];
-
-        if($type == "audio/mp3" || $type == "audio/ogg" || $type == "audio/wma" || $type == "audio/wav"){
-        	if(!file_exists("users_songs")){
-        		mkdir("users_songs");
-        	}else{
-        		if(!file_exists("users_songs/".$username)){
-        			mkdir("users_songs/" .$username);
-        		}else{	
-        			move_uploaded_file($temp, "users_songs/" .$username."/".$name);
-        			mysqli_query($con,"INSERT INTO users(songs_array) VALUES() WHERE id='$id'");
-        		}
-        	}
-        }
-	}
-	
+$username = $_SESSION['username'];		
  ?>
  <!DOCTYPE html>
  <html>
@@ -40,7 +19,7 @@ if(isset($_FILES['file'])){
  <body>
  <div id="menu">
  	<div id="title">
- 		<p>+</p>
+ 		<p><i class="fa fa-bars" aria-hidden="true" style="transform:rotate(90deg);margin-top:10px;"></i></p>
 	</div>
 	<div id="links">
 	<li><a href="profile.php">Profile</a></li>
@@ -51,7 +30,7 @@ if(isset($_FILES['file'])){
  	</div>
  </div>
  <div id="entire-audio-player">
- <span id="info-icon"><a href="#" title="This player is draggable and could be placed anywhere"><img src="info.png"></a></span>
+ <span id="info-icon"><a href="#" title="This player is draggable and could be placed anywhere. Use initial letters for having control anywhere on page(e.g press 'n' for next track in your list) with the exception of pause and play."><img src="info.png"></a></span>
  	<div id="info">
  		<span id="song"></span>
  	</div><br>
@@ -73,19 +52,65 @@ if(isset($_FILES['file'])){
  		<div id="duration">0:00</div>
  	</div>
  </div>
+ <button id="cloud-upload"><i class="fa fa-cloud-upload fa-4x" aria-hidden="true"></i></button>
  <br><br>
- <form action="" enctype="multipart/form-data" method="post">
- <input type="file" value="Upload music from computer" id="upload" name="file"></input>
- <input type="submit" id="submit" name="submit"></input>
+ <div id="upload-body">
+ </div>
+ <div id="upload-panel">
+ <img src="close.png" class="fa-times" height="17.5px;">
+ <form action="" method="post" enctype="multipart/form-data">
+ <br><br>
+ <div id="drop_box"><br><br><br><img src="file.png" height="100px"><br>Drag and drop songs of<br> your choice</div><br>
+ <div id="status"></div>
+ <input type="file" value="Upload music from computer" id="file" name="file"></input>
+ <input type="submit" id="submit" name="submit" ></input>
  </form>
+ </div>
+ <div id="data"></div>
  <audio src="" id="audioPlayer"></audio>
  <ul id="playlist">
  </ul>
  </div>
  <script type="text/javascript" src="js/main.js"></script><script type="text/javascript">
- 	$("#playlist").load("update/mysongs.php");
- 	$("#playlist li a").attr("href","users_songs/" + "<?php echo $username; ?>" + "/" + $("#playlist li a").text());
- 	audioPlayer();
+    $("#playlist").load("update/mysongs.php");
+        audioPlayer();
  </script>
+ <?php
+ if(isset($_POST['submit'])){
+        $name = $_FILES['file']['name'];
+        $size = $_FILES['file']['size'];
+        $type = $_FILES['file']['type'];
+        $temp = $_FILES['file']['tmp_name'];
+        $error = $_FILES['file']['error'];
+        if (strpos($name, ',') == true) {
+            echo "Please change the name of the song it shouldn't contain any special characters like comma(,), pipes(|),.....";
+        }else{
+        if($type == "audio/mp3" || $type == "audio/wav" || $type == "audio/wmv" || $type == "audio/avi" || $type == "audio/ogg"){
+                
+                $query =  mysqli_query($con,"SELECT songs_array FROM users WHERE id='$id'");
+                $fetch_row = mysqli_fetch_assoc($query);
+                if($fetch_row['songs_array'] == ""){
+                         mysqli_query($con,"UPDATE users SET songs_array=CONCAT(songs_array,'$name') WHERE id='$id'");
+
+                }else{
+                         mysqli_query($con,"UPDATE users SET songs_array=CONCAT(songs_array,',$name') WHERE id='$id'");
+                }
+                if(!file_exists('users_songs')){
+                        mkdir('users_songs');
+                }else{
+                        if(!file_exists('users_songs/' . $username)){
+                                mkdir('users_songs/'.$username);
+                        }
+                }
+                move_uploaded_file($temp, 'users_songs/'.$username.'/'.$name);
+
+
+
+        }else{
+                echo "The file you are trying to upload is not supported";
+        }
+    }
+  }
+  ?>
  </body>
  </html>
